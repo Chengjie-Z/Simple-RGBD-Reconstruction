@@ -13,4 +13,4 @@ add_library(simpleslam SHARED
         mapping.cpp)
 
 target_link_libraries(simpleslam
-        ${THIRD_PARTY_LIBS})
+    ${THIRD_PARTY_LIBS})
