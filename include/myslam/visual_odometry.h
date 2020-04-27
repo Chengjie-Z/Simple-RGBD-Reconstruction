@@ -9,6 +9,7 @@
 #include "myslam/viewer.h"
 
 #include "myslam/mapping.h"
+#include "myslam/reconstruction.h"
 
 
 namespace simpleslam {
@@ -46,6 +47,9 @@ public:
     void SavePointCloud(bool flag) {save_point_cloud_=flag;}
     void SetRealtime(bool flag){realtime_=flag;}
     void SetBuildMap(bool flag){build_map_=flag;}
+    void ReconstructMeshAll(); //All previous frames
+    void ReconstructMesh();// Only current frame
+    void ReconstructMesh(int image_index);// Only current frame
 private:
     bool inited_ = false;
     bool save_pose_=false;

@@ -109,6 +109,32 @@ bool VisualOdometry::Step() {
     }
     return success;
 }
+    void VisualOdometry::ReconstructMeshAll()
+{
 
+}
+    void VisualOdometry::ReconstructMesh()
+{
+    Mapping::PointCloud::Ptr cloud = io_->LoadPointCloud();
+    Reconstruction::Ptr meshing = Reconstruction::Ptr(new Reconstruction(cloud));
+    pcl::PolygonMesh mesh = meshing->Poisson(8);
+    io_->SaveMesh(mesh);
+}
+    void VisualOdometry::ReconstructMesh(int image_index)
+{
+    if(io_==nullptr){
+        if (Config::SetParameterFile(config_file_path_) == false) {
+            std::cout << "Error reading config file." << std::endl;
+            return;
+        }
+        io_ =IO::Ptr(new IO(Config::Get<std::string>("dataset_dir")));
+        io_->SetRealtime(realtime_);
+    }
+    Mapping::PointCloud::Ptr cloud = io_->LoadPointCloud(image_index);
+    Reconstruction::Ptr meshing = Reconstruction::Ptr(new Reconstruction(cloud));
+    meshing->NormalEstimation();
+    pcl::PolygonMesh mesh = meshing->Poisson(8);
+    io_->SaveMesh(mesh);
+}
 
 }  // namespace myslam

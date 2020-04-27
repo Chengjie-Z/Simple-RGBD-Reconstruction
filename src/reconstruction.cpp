@@ -36,7 +36,7 @@ namespace simpleslam{
         ne.compute(*cloud_normals);
         pcl::concatenateFields(*(cloudxyz_), *cloud_normals, *cloud_with_normals_);
 }
-    void Reconstruction::NormalEstimation(int polynomial_order, double search_rad)
+    void Reconstruction::MovingLeastSquares(int polynomial_order, double search_rad)
     {
         pcl::search::KdTree<pcl::PointXYZ>::Ptr tree1(new pcl::search::KdTree<pcl::PointXYZ>(false));
         tree1->setInputCloud(cloudxyz_);

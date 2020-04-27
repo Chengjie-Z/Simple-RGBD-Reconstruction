@@ -91,6 +91,11 @@ Frame::Ptr IO::NextFrame() {
     return new_frame;
 }
 
+bool IO::SaveMesh(pcl::PolygonMesh mesh)
+{
+    boost::format mesh_fmt("%s/mesh/%05d.vtk");
+    pcl::io::saveVTKFile((mesh_fmt % dataset_path_ % current_image_index_).str(), mesh);
+}
 bool IO::SavePose(Frame::Ptr current_frame)
 {
 

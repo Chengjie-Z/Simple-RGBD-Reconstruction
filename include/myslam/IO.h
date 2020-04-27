@@ -7,7 +7,7 @@
 #include <pcl/point_types.h>
 #include <pcl/io/pcd_io.h>
 #include <librealsense2/rs.hpp>
-
+#include <pcl/io/vtk_io.h>
 #include "mapping.h"
 
 namespace simpleslam {
@@ -37,6 +37,7 @@ class IO {
     bool SavePointCloud(Mapping::PointCloud::Ptr pcd);
     Mapping::PointCloud::Ptr LoadPointCloud();
     Mapping::PointCloud::Ptr LoadPointCloud(int image_index);
+    bool SaveMesh(pcl::PolygonMesh mesh);
     int GetIndex(){return current_image_index_;}
     void SetRealtime(bool flag){realtime_=flag;}
     void SetupRealsenseCamera();

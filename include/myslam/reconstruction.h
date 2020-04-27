@@ -25,13 +25,14 @@ namespace simpleslam{
 
 class Reconstruction {
     public:
+    typedef std::shared_ptr<Reconstruction> Ptr;
 
     Reconstruction (Mapping::PointCloud::Ptr cloud);
     ~Reconstruction (){};
 
     void NormalEstimation(int k_search_num=100);
 
-    void NormalEstimation(int polynomial_order=2, double search_rad = 0.03);
+    void MovingLeastSquares(int polynomial_order=2, double search_rad = 0.03);
 
     pcl::PolygonMesh Poisson( int depth);
 
