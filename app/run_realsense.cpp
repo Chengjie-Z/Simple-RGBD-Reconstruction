@@ -10,7 +10,7 @@ DEFINE_string(config_file, "../config/default.yaml", "config file path");
 
 int main(int argc, char **argv) {
     //google::ParseCommandLineFlags(&argc, &argv, true);
-
+    std::cout << "OK" << std::endl;
     simpleslam::VisualOdometry::Ptr vo(
         new simpleslam::VisualOdometry(FLAGS_config_file));
     vo->SavePose(false);

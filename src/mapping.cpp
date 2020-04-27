@@ -54,7 +54,16 @@ namespace simpleslam{
         tmp2->swap(*dense_map);
         LOG(INFO)<<"point cloud size:"<<dense_map->size();
     }
-
+    void Mapping::merge_with(PointCloud::Ptr pt_cloud, double resolution){
+        (*dense_map ) += *pt_cloud;
+        pcl::VoxelGrid<PointT> voxel_filter;
+        voxel_filter.setLeafSize(resolution, resolution, resolution);       // resolution
+        Mapping::PointCloud::Ptr tmp2(new PointCloud);
+        voxel_filter.setInputCloud(dense_map);
+        voxel_filter.filter(*tmp2);
+        tmp2->swap(*dense_map);
+        LOG(INFO)<<"point cloud size:"<<dense_map->size();
+    }
     Mapping::PointCloud::Ptr Mapping::get_pcd(Frame::Ptr frame,Camera::Ptr camera) {
 
         auto result_pcd =  PointCloud::Ptr(new PointCloud);

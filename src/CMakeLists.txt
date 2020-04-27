@@ -10,7 +10,8 @@ add_library(simpleslam SHARED
         viewer.cpp
         visual_odometry.cpp
         IO.cpp
-        mapping.cpp)
+        mapping.cpp
+        reconstruction.cpp)
 
 target_link_libraries(simpleslam
     ${THIRD_PARTY_LIBS})

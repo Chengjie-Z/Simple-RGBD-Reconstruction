@@ -31,6 +31,7 @@ public:
 
     Mapping();
     bool merge_with(Frame::Ptr frame, Camera::Ptr camera);
+    void merge_with(Mapping::PointCloud::Ptr pt_cloud, double resolution=0.03);
     PointCloud::Ptr get_pcd(Frame::Ptr frame,Camera::Ptr camera);
 
 };

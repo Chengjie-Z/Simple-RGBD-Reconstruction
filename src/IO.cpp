@@ -108,6 +108,20 @@ bool IO::SavePointCloud(Mapping::PointCloud::Ptr pcd)
     pcl::io::savePCDFileASCII ((pcd_fmt % dataset_path_  % current_image_index_).str(), *pcd);
 }
 
+Mapping::PointCloud::Ptr IO::LoadPointCloud()
+{
+    return LoadPointCloud(current_image_index_);
+}
+Mapping::PointCloud::Ptr IO::LoadPointCloud(int image_index)
+{
+    boost::format pcd_fmt("%s/pointcloud/%05d.pcd");
+    Mapping::PointCloud::Ptr cloud (new Mapping::PointCloud);
+    if (pcl::io::loadPCDFile<Mapping::PointT> ((pcd_fmt % dataset_path_ % image_index).str(), *cloud) == -1)
+    {
+        PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
+    }
+    return cloud;
+}
 void IO::SetupRealsenseCamera() {
     pipe_ = std::make_shared<rs2::pipeline>();
     align_to_color_ = std::make_shared<rs2::align>(RS2_STREAM_COLOR);
