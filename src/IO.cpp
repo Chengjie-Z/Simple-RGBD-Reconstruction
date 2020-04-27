@@ -4,6 +4,12 @@
 #include <boost/format.hpp>
 #include <fstream>
 #include <opencv2/opencv.hpp>
+
+#include <pcl/surface/vtk_smoothing/vtk_utils.h>
+#include <vtkXMLPolyDataWriter.h>
+#include <vtkPolyData.h>
+#include <vtkSmartPointer.h>
+
 using namespace std;
 
 namespace simpleslam {
@@ -94,7 +100,19 @@ Frame::Ptr IO::NextFrame() {
 bool IO::SaveMesh(pcl::PolygonMesh mesh)
 {
     boost::format mesh_fmt("%s/mesh/%05d.vtk");
-    pcl::io::saveVTKFile((mesh_fmt % dataset_path_ % current_image_index_).str(), mesh);
+    //pcl::io::saveVTKFile((mesh_fmt % dataset_path_ % current_image_index_).str(), mesh);
+    //Avoid saving vertices as cells
+    vtkSmartPointer< vtkPolyData > poly = vtkSmartPointer< vtkPolyData >::New();
+    pcl::VTKUtils::convertToVTK (mesh, poly);
+    vtkSmartPointer< vtkPolyData > poly2 = vtkSmartPointer< vtkPolyData>::New();
+    poly2->SetPoints(poly->GetPoints());
+    poly2->SetPolys(poly->GetPolys());
+    vtkSmartPointer<vtkXMLPolyDataWriter> writer =
+    vtkSmartPointer<vtkXMLPolyDataWriter>::New();
+    writer->SetFileName((mesh_fmt % dataset_path_ % current_image_index_).str().c_str());
+    writer->SetInputData(poly2);
+    writer->Write();
+
 }
 bool IO::SavePose(Frame::Ptr current_frame)
 {
@@ -111,6 +129,14 @@ bool IO::SavePointCloud(Mapping::PointCloud::Ptr pcd)
 {
     boost::format pcd_fmt("%s/pointcloud/%05d.pcd");
     pcl::io::savePCDFileASCII ((pcd_fmt % dataset_path_  % current_image_index_).str(), *pcd);
+}
+
+bool IO::SaveVTKPointCloud(Mapping::PointCloud::Ptr pcd)
+{
+    boost::format pcd_fmt("%s/pointcloud/%05d.vtk");
+    pcl::PCLPointCloud2 point_cloud2;
+    pcl::toPCLPointCloud2(*pcd, point_cloud2);
+    pcl::io::saveVTKFile ((pcd_fmt % dataset_path_  % current_image_index_).str(), point_cloud2);
 }
 
 Mapping::PointCloud::Ptr IO::LoadPointCloud()

@@ -4,19 +4,8 @@
 #include <iostream>
 #include <thread>
 
-#include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
 #include <pcl/point_cloud.h>
-#include <pcl/octree/octree.h>
-#include <pcl/common/centroid.h>
-#include <pcl/io/vtk_io.h>
-#include <pcl/search/kdtree.h>
-#include <pcl/features/normal_3d_omp.h>
-#include <pcl/surface/marching_cubes_hoppe.h>
-#include <pcl/surface/marching_cubes.h>
-#include <pcl/surface/mls.h>
-#include <pcl/surface/marching_cubes_rbf.h>
-#include <pcl/surface/poisson.h>
 
 #include "myslam/mapping.h"
 
@@ -34,16 +23,20 @@ class Reconstruction {
 
     void MovingLeastSquares(int polynomial_order=2, double search_rad = 0.03);
 
-    pcl::PolygonMesh Poisson( int depth);
+    void Poisson( int depth);
 
-    pcl::PolygonMesh MarchingCubes(std::string option, double iso_level, int resolution, double percent_extend);
+    void MarchingCubes(std::string option, double iso_level, int resolution, double percent_extend);
 
+    void FilterLargeEdgeLength(double tol);
+
+    pcl::PolygonMesh GetMesh();
     private:
    
     bool use_camera_pos_ = false; 
     Vec3 pos_ = Vec3::Zero(); //position in world
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloudxyz_;
     pcl::PointCloud<pcl::PointNormal>::Ptr cloud_with_normals_;
+    pcl::PolygonMesh mesh_;
     //pcl::search::KdTree<pcl::PointNormal>::Ptr tree_;
 
 

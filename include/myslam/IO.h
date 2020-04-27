@@ -35,6 +35,7 @@ class IO {
 
     bool SavePose(Frame::Ptr current_frame);
     bool SavePointCloud(Mapping::PointCloud::Ptr pcd);
+    bool SaveVTKPointCloud(Mapping::PointCloud::Ptr pcd);
     Mapping::PointCloud::Ptr LoadPointCloud();
     Mapping::PointCloud::Ptr LoadPointCloud(int image_index);
     bool SaveMesh(pcl::PolygonMesh mesh);

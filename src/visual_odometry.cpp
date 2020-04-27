@@ -119,18 +119,15 @@ bool VisualOdometry::Step() {
         io_ =IO::Ptr(new IO(Config::Get<std::string>("dataset_dir")));
         io_->SetRealtime(realtime_);
     }
-    std::cout << "111" << std::endl;
     if(mapping_==nullptr){
         mapping_ = Mapping::Ptr(new Mapping());
-        std::cout << "112" << std::endl;
     }
-    std::cout << "113" << std::endl;
     for (int i=0; i<max_frame_num; i+=10){
         Mapping::PointCloud::Ptr cloud = io_->LoadPointCloud(i);
-        mapping_->merge_with(cloud);
+        mapping_->merge_with(cloud, 0.01);
     }
-    std::cout << "114" << std::endl;
     ReconstructMesh();
+    io_->SaveVTKPointCloud(mapping_->dense_map);
 
 }
     void VisualOdometry::ReconstructMesh()
@@ -141,8 +138,9 @@ bool VisualOdometry::Step() {
     Mapping::PointCloud::Ptr cloud = mapping_->dense_map;
     Reconstruction::Ptr meshing = Reconstruction::Ptr(new Reconstruction(cloud));
     meshing->NormalEstimation();
-    pcl::PolygonMesh mesh = meshing->Poisson(8);
-    io_->SaveMesh(mesh);
+    meshing->Poisson(9);
+    meshing->FilterLargeEdgeLength(0.05);
+    io_->SaveMesh(meshing->GetMesh());
 }
     void VisualOdometry::ReconstructMesh(int image_index)
 {
@@ -157,8 +155,9 @@ bool VisualOdometry::Step() {
     Mapping::PointCloud::Ptr cloud = io_->LoadPointCloud(image_index);
     Reconstruction::Ptr meshing = Reconstruction::Ptr(new Reconstruction(cloud));
     meshing->NormalEstimation();
-    pcl::PolygonMesh mesh = meshing->Poisson(8);
-    io_->SaveMesh(mesh);
+    meshing->Poisson(9);
+    meshing->FilterLargeEdgeLength(0.05);
+    io_->SaveMesh(meshing->GetMesh());
 }
 
 }  // namespace myslam

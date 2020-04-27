@@ -4,7 +4,8 @@ project(simpleslam)
 set(CMAKE_BUILD_TYPE Release)
 
 set(CMAKE_CXX_FLAGS "-std=c++11 -Wall ")
-set(CMAKE_CXX_FLAGS_RELEASE  "-std=c++11 -O3 -pthread")
+#set(CMAKE_CXX_FLAGS_RELEASE  "-std=c++11 -O3 -pthread")
+set(CMAKE_CXX_FLAGS_RELEASE  "-std=c++11 -O3")
 if(UNIX AND NOT APPLE)
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fopenmp")
 endif()
@@ -67,7 +68,6 @@ set(THIRD_PARTY_LIBS
         ${GTEST_BOTH_LIBRARIES}
         ${GLOG_LIBRARIES}
         ${GFLAGS_LIBRARIES}
-        pthread
         ${CSPARSE_LIBRARY}
         ${PCL_LIBRARIES}
         )
@@ -76,6 +76,7 @@ if(UNIX AND NOT APPLE)
         GL GLU GLEW glut
         g2o_core g2o_stuff g2o_types_sba g2o_solver_csparse g2o_csparse_extension
         realsense2
+        pthread
         )
 elseif(APPLE)
     list(APPEND THIRD_PARTY_LIBS
