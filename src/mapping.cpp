@@ -8,7 +8,7 @@
 namespace simpleslam{
     Mapping::Mapping()
     {
-        pcd_viewer = std::make_shared<pcl::visualization::CloudViewer>("Point Cloud Viewer");
+//        pcd_viewer = std::make_shared<pcl::visualization::CloudViewer>("Point Cloud Viewer");
         dense_map = PointCloud::Ptr(new PointCloud);
     }
 
@@ -56,13 +56,14 @@ namespace simpleslam{
     }
     void Mapping::merge_with(PointCloud::Ptr pt_cloud, double resolution){
         (*dense_map ) += *pt_cloud;
+        LOG(INFO)<<"point cloud size before filtering:"<<dense_map->size();
         pcl::VoxelGrid<PointT> voxel_filter;
         voxel_filter.setLeafSize(resolution, resolution, resolution);       // resolution
         Mapping::PointCloud::Ptr tmp2(new PointCloud);
         voxel_filter.setInputCloud(dense_map);
         voxel_filter.filter(*tmp2);
         tmp2->swap(*dense_map);
-        LOG(INFO)<<"point cloud size:"<<dense_map->size();
+        LOG(INFO)<<"point cloud size after filtering:"<<dense_map->size();
     }
     Mapping::PointCloud::Ptr Mapping::get_pcd(Frame::Ptr frame,Camera::Ptr camera) {
 

@@ -123,7 +123,7 @@ Mapping::PointCloud::Ptr IO::LoadPointCloud(int image_index)
     Mapping::PointCloud::Ptr cloud (new Mapping::PointCloud);
     if (pcl::io::loadPCDFile<Mapping::PointT> ((pcd_fmt % dataset_path_ % image_index).str(), *cloud) == -1)
     {
-        PCL_ERROR ("Couldn't read file test_pcd.pcd \n");
+        PCL_ERROR ("Couldn't read file. \n");
     }
     return cloud;
 }

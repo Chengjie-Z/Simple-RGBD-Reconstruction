@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     vo->SavePointCloud(false);
     vo->SetRealtime(false);
     vo->SetBuildMap(true);
-    vo->ReconstructMesh(200); 
+    vo->ReconstructMeshAll(471); 
 
     return 0;
 }

@@ -109,14 +109,38 @@ bool VisualOdometry::Step() {
     }
     return success;
 }
-    void VisualOdometry::ReconstructMeshAll()
+    void VisualOdometry::ReconstructMeshAll(int max_frame_num)
 {
+    if(io_==nullptr){
+        if (Config::SetParameterFile(config_file_path_) == false) {
+            std::cout << "Error reading config file." << std::endl;
+            return;
+        }
+        io_ =IO::Ptr(new IO(Config::Get<std::string>("dataset_dir")));
+        io_->SetRealtime(realtime_);
+    }
+    std::cout << "111" << std::endl;
+    if(mapping_==nullptr){
+        mapping_ = Mapping::Ptr(new Mapping());
+        std::cout << "112" << std::endl;
+    }
+    std::cout << "113" << std::endl;
+    for (int i=0; i<max_frame_num; i+=10){
+        Mapping::PointCloud::Ptr cloud = io_->LoadPointCloud(i);
+        mapping_->merge_with(cloud);
+    }
+    std::cout << "114" << std::endl;
+    ReconstructMesh();
 
 }
     void VisualOdometry::ReconstructMesh()
 {
-    Mapping::PointCloud::Ptr cloud = io_->LoadPointCloud();
+    if(mapping_==nullptr){
+        return;
+    }
+    Mapping::PointCloud::Ptr cloud = mapping_->dense_map;
     Reconstruction::Ptr meshing = Reconstruction::Ptr(new Reconstruction(cloud));
+    meshing->NormalEstimation();
     pcl::PolygonMesh mesh = meshing->Poisson(8);
     io_->SaveMesh(mesh);
 }
