@@ -26,8 +26,8 @@ public:
     typedef pcl::PointCloud<PointT> PointCloud;
 
     PointCloud::Ptr dense_map;
-    std::shared_ptr<pcl::visualization::CloudViewer> pcd_viewer;
-
+    //std::shared_ptr<pcl::visualization::CloudViewer> pcd_viewer;
+    //pcl::visualization::CloudViewer pcd_viewer;
 
     Mapping();
     bool merge_with(Frame::Ptr frame, Camera::Ptr camera);

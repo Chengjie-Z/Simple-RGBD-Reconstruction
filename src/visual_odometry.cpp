@@ -85,7 +85,7 @@ bool VisualOdometry::Step() {
     {
         auto t3 = std::chrono::steady_clock::now();
         mapping_->merge_with(new_frame,io_->GetCamera(0));
-        mapping_->pcd_viewer->showCloud(mapping_->dense_map);
+        //mapping_->pcd_viewer.showCloud(mapping_->dense_map);
         auto t4 = std::chrono::steady_clock::now();
         timer2  +=  std::chrono::duration_cast<std::chrono::duration<double>>(t4 - t3).count();
     }

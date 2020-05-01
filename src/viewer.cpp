@@ -33,6 +33,8 @@ void Viewer::UpdateMap() {
 }
 
 void Viewer::ThreadLoop() {
+    return;
+    /**
     pangolin::CreateWindowAndBind("SimpleSLAM", 1024, 768);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
@@ -75,6 +77,7 @@ void Viewer::ThreadLoop() {
     }
 
     LOG(INFO) << "Stop viewer";
+    **/
 }
 
 cv::Mat Viewer::PlotFrameImage() {

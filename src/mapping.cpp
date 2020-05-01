@@ -8,7 +8,7 @@
 namespace simpleslam{
     Mapping::Mapping()
     {
-//        pcd_viewer = std::make_shared<pcl::visualization::CloudViewer>("Point Cloud Viewer");
+        //pcd_viewer = std::make_shared<pcl::visualization::CloudViewer>("Point Cloud Viewer");
         dense_map = PointCloud::Ptr(new PointCloud);
     }
 
