@@ -5,9 +5,11 @@
 #include "myslam/mapping.h"
 
 namespace simpleslam{
-    Mapping::Mapping()
+    Mapping::Mapping(double voxel_length, double sdf_trunc)
     {
-        dense_map = Map_Ptr(new TSDF(0.04,0.3,open3d::integration::TSDFVolumeColorType::RGB8));
+        voxel_length_ = voxel_length;
+        sdf_trunc_ = sdf_trunc;
+        dense_map = Map_Ptr(new TSDF(voxel_length_ , sdf_trunc_, open3d::integration::TSDFVolumeColorType::RGB8));
     }
 
     bool Mapping::merge_with(Frame::Ptr frame,Camera::Ptr camera) {

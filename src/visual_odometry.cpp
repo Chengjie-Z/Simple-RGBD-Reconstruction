@@ -4,6 +4,7 @@
 #include "myslam/visual_odometry.h"
 #include <chrono>
 #include "myslam/config.h"
+#include <boost/format.hpp>
 
 namespace simpleslam {
 
@@ -26,7 +27,7 @@ bool VisualOdometry::Init() {
     backend_ = Backend::Ptr(new Backend);
     map_ = Map::Ptr(new Map);
     viewer_ = Viewer::Ptr(new Viewer);
-    mapping_ = Mapping::Ptr(new Mapping());
+    mapping_ = Mapping::Ptr(new Mapping(Config::Get<double>("voxel_length"), Config::Get<double>("sdf_trunc")));
     frontend_->SetBackend(backend_);
     frontend_->SetMap(map_);
     frontend_->SetViewer(viewer_);
@@ -69,7 +70,7 @@ bool VisualOdometry::Step() {
         //mapping_->pcd_viewer->showCloud(mapping_->dense_map);
         //io_->SavePointCloud(pcd);
         auto t4 = std::chrono::steady_clock::now();
-        timer2  +=  std::chrono::duration_cast<std::chrono::duration<double>>(t4 - t3).count();
+        //timer2  +=  std::chrono::duration_cast<std::chrono::duration<double>>(t4 - t3).count();
     }
 
     if(build_map_)
@@ -80,9 +81,9 @@ bool VisualOdometry::Step() {
         auto t4 = std::chrono::steady_clock::now();
         timer2  +=  std::chrono::duration_cast<std::chrono::duration<double>>(t4 - t3).count();
     }
-    if(build_map_&&io_->GetIndex()%50==0)
-        open3d::visualization::DrawGeometries({mapping_->dense_map->ExtractTriangleMesh()}, "Mesh", 1600, 900);
-
+    if(build_map_&&io_->GetIndex()%2==0){
+       io_->SaveMesh(mapping_); 
+    }
 
     auto t5 = std::chrono::steady_clock::now();
 

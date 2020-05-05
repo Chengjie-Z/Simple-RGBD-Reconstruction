@@ -35,6 +35,7 @@ class IO {
 
     bool SavePose(Frame::Ptr current_frame);
     //bool SavePointCloud(Mapping::PointCloud::Ptr pcd);
+    bool SaveMesh(Mapping::Ptr mapping);
     int GetIndex(){return current_image_index_;}
     void SetRealtime(bool flag){realtime_=flag;}
     void SetupRealsenseCamera();

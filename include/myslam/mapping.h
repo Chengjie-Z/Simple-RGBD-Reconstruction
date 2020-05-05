@@ -26,8 +26,10 @@ public:
 
     Map_Ptr dense_map;
 
-    Mapping();
+    Mapping(double voxel_length=0.04, double sdf_trunc=0.3);
     bool merge_with(Frame::Ptr frame, Camera::Ptr camera);
+    double voxel_length_;
+    double sdf_trunc_;
 };
 
 

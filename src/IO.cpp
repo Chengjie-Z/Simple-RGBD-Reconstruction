@@ -107,8 +107,14 @@ bool IO::SavePose(Frame::Ptr current_frame)
     myfile.close();
 }
 
+bool IO::SaveMesh(Mapping::Ptr mapping)
+{
+    
+    boost::format mesh_fmt("%s/mesh/mesh_%05d.ply");
+    std::string file_name = (mesh_fmt % dataset_path_ % current_image_index_).str();
+    open3d::io::WriteTriangleMesh(file_name, *(mapping->dense_map->ExtractTriangleMesh()));
 
-
+}
 void IO::SetupRealsenseCamera() {
     pipe_ = std::make_shared<rs2::pipeline>();
     align_to_color_ = std::make_shared<rs2::align>(RS2_STREAM_COLOR);
