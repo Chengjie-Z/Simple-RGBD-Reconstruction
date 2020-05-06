@@ -91,14 +91,12 @@ bool VisualOdometry::Step() {
     if(build_map_&&io_->GetIndex()%50==0){
         //open3d::visualization::DrawGeometries({mapping_->dense_map->ExtractTriangleMesh()}, "Mesh", 1600, 900);
         auto mesh = mapping_->dense_map->ExtractTriangleMesh();
-        //if(!o3d_viewer_->HasGeometry()){
-        //    o3d_viewer_->AddGeometry(mesh);
-        //}
         if(o3d_viewer_->HasGeometry()){
              o3d_viewer_->ClearGeometries ();
         }
         o3d_viewer_->AddGeometry(mesh);
         o3d_viewer_->UpdateGeometry();
+        o3d_viewer_->GetViewControl().Rotate(0., 1000.);
         o3d_viewer_->PollEvents();
         o3d_viewer_->UpdateRender();
     }
