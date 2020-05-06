@@ -3,6 +3,8 @@
 //
 
 #include <opencv2/opencv.hpp>
+#include "Open3D/Odometry/Odometry.h"
+#include <tuple>
 
 #include "myslam/algorithm.h"
 #include "myslam/backend.h"
@@ -51,7 +53,15 @@ bool Frontend::Track() {
 
     int num_track_last = TrackLastFrame();
     tracking_inliers_ = EstimateCurrentPose();
+    bool success = Open3DEstimateCurrentPose();
 
+    if (success){
+        status_ = FrontendStatus::TRACKING_GOOD;
+    }
+    else{
+        status_ = FrontendStatus::TRACKING_BAD;
+    }
+    /**
     if (tracking_inliers_ > num_features_tracking_) {
         // tracking good
         status_ = FrontendStatus::TRACKING_GOOD;
@@ -62,6 +72,7 @@ bool Frontend::Track() {
         // lost
         status_ = FrontendStatus::LOST;
     }
+    **/
 
     InsertKeyframe();
     relative_motion_ = current_frame_->Pose() * last_frame_->Pose().inverse();
@@ -217,8 +228,18 @@ int Frontend::EstimateCurrentPose() {
 }
 
 
-
-
+bool Frontend::Open3DEstimateCurrentPose()
+{
+    
+    std::tuple< bool, Eigen::Matrix4d, Eigen::Matrix6d > output;
+    output = open3d::odometry::ComputeRGBDOdometry(*to_o3d_RGBDImage(last_frame_), *to_o3d_RGBDImage(current_frame_), *to_o3d_intrinsic(camera_));
+    Eigen::Affine3d trans;
+    Eigen::Matrix4d t4 = std::get<1>(output);
+    trans.matrix() = t4;
+    SE3 relative_motion = SE3(trans.rotation(),trans.translation());
+    current_frame_->SetPose(relative_motion*last_frame_->Pose());
+    return std::get<0>(output);
+}
 
 int Frontend::TrackLastFrame() {
     std::vector<cv::Point2f> kps_last, kps_current;

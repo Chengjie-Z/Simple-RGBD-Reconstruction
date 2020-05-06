@@ -7,7 +7,7 @@
 #include "myslam/common_include.h"
 #include "myslam/frame.h"
 #include "myslam/map.h"
-
+#include "myslam/conversion.h"
 namespace simpleslam {
 
 class Backend;
@@ -66,6 +66,8 @@ class Frontend {
      * @return num of inliers
      */
     int EstimateCurrentPose();
+    
+    bool Open3DEstimateCurrentPose();
 
     /**
      * set current frame as a keyframe and insert it into backend
