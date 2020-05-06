@@ -10,6 +10,7 @@
 
 #include "myslam/mapping.h"
 
+#include "Open3D/Visualization/Visualizer/VisualizerWithKeyCallback.h"
 
 namespace simpleslam {
 
@@ -74,6 +75,8 @@ private:
     double timer1=0;
     double timer2=0;
     double timer3=0;
+
+    std::shared_ptr<open3d::visualization::VisualizerWithKeyCallback> o3d_viewer_;
 };
 }  // namespace myslam
 

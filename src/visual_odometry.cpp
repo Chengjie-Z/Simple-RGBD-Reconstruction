@@ -34,6 +34,14 @@ bool VisualOdometry::Init() {
     backend_->SetMap(map_);
     backend_->SetCamera(io_->GetCamera(0));
     viewer_->SetMap(map_);
+    o3d_viewer_ = std::make_shared<open3d::visualization::VisualizerWithKeyCallback>();
+    bool flag_exit = false;
+    o3d_viewer_->RegisterKeyCallback(GLFW_KEY_ESCAPE,
+                            [&](open3d::visualization::Visualizer *o3d_viewer_) {
+                                flag_exit = true;
+                                return false;
+                            });
+    o3d_viewer_->CreateVisualizerWindow("Mesh", 1600, 900);
     return true;
 }
 
@@ -80,9 +88,20 @@ bool VisualOdometry::Step() {
         auto t4 = std::chrono::steady_clock::now();
         timer2  +=  std::chrono::duration_cast<std::chrono::duration<double>>(t4 - t3).count();
     }
-    if(build_map_&&io_->GetIndex()%50==0)
-        open3d::visualization::DrawGeometries({mapping_->dense_map->ExtractTriangleMesh()}, "Mesh", 1600, 900);
-
+    if(build_map_&&io_->GetIndex()%50==0){
+        //open3d::visualization::DrawGeometries({mapping_->dense_map->ExtractTriangleMesh()}, "Mesh", 1600, 900);
+        auto mesh = mapping_->dense_map->ExtractTriangleMesh();
+        //if(!o3d_viewer_->HasGeometry()){
+        //    o3d_viewer_->AddGeometry(mesh);
+        //}
+        if(o3d_viewer_->HasGeometry()){
+             o3d_viewer_->ClearGeometries ();
+        }
+        o3d_viewer_->AddGeometry(mesh);
+        o3d_viewer_->UpdateGeometry();
+        o3d_viewer_->PollEvents();
+        o3d_viewer_->UpdateRender();
+    }
 
     auto t5 = std::chrono::steady_clock::now();
 
