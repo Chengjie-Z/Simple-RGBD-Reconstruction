@@ -74,6 +74,7 @@ private:
     double timer1=0;
     double timer2=0;
     double timer3=0;
+    double timer4=0;
 };
 }  // namespace myslam
 

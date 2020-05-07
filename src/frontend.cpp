@@ -53,15 +53,17 @@ bool Frontend::Track() {
 
     int num_track_last = TrackLastFrame();
     tracking_inliers_ = EstimateCurrentPose();
+    /**
     bool success = Open3DEstimateCurrentPose();
-
+    
     if (success){
         status_ = FrontendStatus::TRACKING_GOOD;
     }
     else{
         status_ = FrontendStatus::TRACKING_BAD;
     }
-    /**
+    **/
+    
     if (tracking_inliers_ > num_features_tracking_) {
         // tracking good
         status_ = FrontendStatus::TRACKING_GOOD;
@@ -72,7 +74,7 @@ bool Frontend::Track() {
         // lost
         status_ = FrontendStatus::LOST;
     }
-    **/
+    
 
     InsertKeyframe();
     relative_motion_ = current_frame_->Pose() * last_frame_->Pose().inverse();

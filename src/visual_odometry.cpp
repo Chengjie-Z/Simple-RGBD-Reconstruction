@@ -35,6 +35,8 @@ bool VisualOdometry::Init() {
     backend_->SetMap(map_);
     backend_->SetCamera(io_->GetCamera(0));
     viewer_->SetMap(map_);
+    std::cout << "TSDF, voxel_length: " << Config::Get<double>("voxel_length") << std::endl; 
+    std::cout << "TSDF, sdf_trunc: " << Config::Get<double>("sdf_trunc") << std::endl; 
     return true;
 }
 
@@ -63,16 +65,6 @@ bool VisualOdometry::Step() {
     if(save_pose_)
         io_->SavePose(new_frame);
 
-    if(save_point_cloud_&&io_->GetIndex()%10==0)
-    {
-        auto t3 = std::chrono::steady_clock::now();
-        //auto pcd = mapping_->get_pcd(new_frame, io_->GetCamera(0));
-        //mapping_->pcd_viewer->showCloud(mapping_->dense_map);
-        //io_->SavePointCloud(pcd);
-        auto t4 = std::chrono::steady_clock::now();
-        //timer2  +=  std::chrono::duration_cast<std::chrono::duration<double>>(t4 - t3).count();
-    }
-
     if(build_map_)
     {
         auto t3 = std::chrono::steady_clock::now();
@@ -80,26 +72,28 @@ bool VisualOdometry::Step() {
         //mapping_->pcd_viewer->showCloud(mapping_->dense_map);
         auto t4 = std::chrono::steady_clock::now();
         timer2  +=  std::chrono::duration_cast<std::chrono::duration<double>>(t4 - t3).count();
+        auto t5 = std::chrono::steady_clock::now();
+        auto mesh = mapping_->dense_map->ExtractTriangleMesh();
+        auto t6 = std::chrono::steady_clock::now();
+        timer3 += std::chrono::duration_cast<std::chrono::duration<double>>(t6 - t5).count();
+        if (io_->GetIndex()%2==0)
+            io_->SaveMesh(mapping_);
     }
-    if(build_map_&&io_->GetIndex()%2==0){
-       io_->SaveMesh(mapping_); 
-    }
-
-    auto t5 = std::chrono::steady_clock::now();
+    auto t7 = std::chrono::steady_clock::now();
 
     timer0  +=  std::chrono::duration_cast<std::chrono::duration<double>>(t1 - t0).count();
     timer1  +=  std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1).count();
-    timer3  +=  std::chrono::duration_cast<std::chrono::duration<double>>(t5 - t1).count();
+    timer4  +=  std::chrono::duration_cast<std::chrono::duration<double>>(t7 - t1).count();
 
     if(io_->GetIndex() % 30 == 0)  //every 50 frames
     {
-        //LOG(INFO) << "IO cost time: " << timer0/30 << " seconds.";
-        //LOG(INFO) << "VO cost time: " << timer1/30 << " seconds.";
+        std::cout << "IO cost time: " << timer0/30 << " seconds." << std::endl;
+        std::cout << "VO cost time: " << timer1/30 << " seconds."<< std::endl;
         if(save_point_cloud_||build_map_)
-
             std::cout << "Mapping cost time: " << timer2/30 << " seconds."<<std::endl;
-        //LOG(INFO) << "Time per frame: " << timer3/30 << " seconds.";
-        //LOG(INFO) << "Frame rate: " << 30/timer3 ;
+        std::cout << "MC cost time: " << timer3/30 << " seconds." << std::endl;
+        std::cout << "Time per frame: " << timer4/30 << " seconds." << std::endl;
+        std:: cout << "Frame rate: " << 30/timer4 << std::endl;
         timer0=timer1=timer2=timer3=0;
     }
     return success;

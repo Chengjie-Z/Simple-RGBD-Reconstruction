@@ -15,5 +15,5 @@ num_features_init: 50
 num_features_tracking: 50
 
 #TSDF 
-voxel_length: 0.007
-sdf_trunc: 0.11
+voxel_length: 0.1
+sdf_trunc: 0.1
